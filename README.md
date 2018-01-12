@@ -90,7 +90,7 @@ python server.py
 
 The server should be listening for events coming from GitHub and responding to them appropriately.
 
-##Development
+## Development
 
 When testing new features and code changes for Tamarack, it is a good idea to set up some personal
 GitHub API tokens, a web hook on your own repository, and to run Tamarack in a virtual environment.
