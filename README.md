@@ -50,6 +50,8 @@ Request events from GitHub. The following environment variables must be set:
 - HOOK_SECRET_KEY
 - PORT (optional)
 
+#### GitHub Token
+
 The `GITHUB_TOKEN` is the API token Tamarack will use to interact with the GitHub API. This token
 should be generated on the GitHub account that the bot will run as, comment on pull requests, etc.
 
@@ -59,6 +61,8 @@ To get started:
 ```
 export GITHUB_TOKEN=your_github_token
 ```
+
+#### Hook Secret Key
 
 The `HOOK_SECRET_KEY` is generated on GitHub's WebHook settings page. This secret key is needed to
 limit requests to the `/events` endpoint only to payloads coming from GitHub. 
@@ -72,6 +76,8 @@ To get started:
 ```
 export HOOK_SECRET_KEY=your_secret_key
 ```
+
+#### Port
 
 The `PORT` environment variable configures the port that Tamarack uses. This variable is optional.
 The default is set to `8080`. To use a different port, set the environment variable:
