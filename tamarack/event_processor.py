@@ -50,12 +50,7 @@ def handle_pull_request(event_data, token):
     print('Received pull request event. Processing...')
     action = event_data.get('action')
     if action == 'opened':
-        # Eventually we should move this to an "assign_reviewers" function,
-        # but we need to wait for GitHub to expose this functionality for
-        # team reviews. It will work for individual members, but not teams
-        # presently. We could also loop through each team and request a
-        # review from each individual member, but let's comment for now.
-        yield tamarack.utils.prs.mention_reviewers(event_data, token)
+        yield tamarack.utils.prs.assign_reviewers(event_data, token)
     else:
         print('Skipping. Action is \'{0}\'. '
               'We only care about \'opened\'.'.format(action))

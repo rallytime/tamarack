@@ -98,6 +98,21 @@ def assign_reviewers(event_data, token, reviewers):
     if not isinstance(reviewers, list):
         reviewers = [reviewers]
 
+    teams = []
+    individuals = []
+    for reviewer in reviewers:
+        if '/' in reviewer:
+            org, team = reviewer.split('/')
+            teams.append(team)
+        else:
+            individuals.append(reviewer)
+
+    post_data = {}
+    if individuals:
+        post_data['reviewers'] = individuals
+    if teams:
+        post_data['team_reviewers'] = teams
+
     print(
         'Requesting reviewers {0} on pull request #{1}.'.format(
             reviewers,
@@ -105,7 +120,7 @@ def assign_reviewers(event_data, token, reviewers):
         )
     )
 
-    yield api_request(url, token, method='POST', post_data={'reviewers': reviewers})
+    yield api_request(url, token, method='POST', post_data=post_data)
 
 
 @gen.coroutine

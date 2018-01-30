@@ -61,6 +61,48 @@ def mention_reviewers(event_data, token):
         )
 
 
+@gen.coroutine
+def assign_reviewers(event_data, token):
+    '''
+    Assigns reviewers on the pull request to the affiliated code owners. The code
+    owners are determined by getting a list of files that were changed in the pull
+    request and comparing the list to the entries defined in the CODEOWNERS file.
+
+    If no matches are found, nothing is done.
+
+    event_data
+        Payload sent from GitHub.
+
+    token
+        GitHub user token.
+    '''
+    pr_owner = event_data.get('pull_request').get('user', {}).get('login')
+    if pr_owner is None:
+        raise tornado.web.HTTPError(
+            500,
+            'Pull Request owner could not be found.'
+        )
+    files = yield tamarack.github.get_pr_file_names(event_data, token)
+    owners_contents = yield tamarack.github.get_owners_file_contents(
+        event_data, token
+    )
+
+    owners = get_code_owners(files, owners_contents)
+    if owners:
+        yield tamarack.github.assign_reviewers(
+            event_data,
+            token,
+            owners
+        )
+    else:
+        print(
+            'No code owners were found for PR #{0}. '
+            'No reviewers requested.'.format(
+                event_data.get('number', 'unknown')
+            )
+        )
+
+
 def get_code_owners(files, owners_contents):
     '''
     Returns a list of code owners who should review a pull request.
@@ -79,8 +121,8 @@ def get_code_owners(files, owners_contents):
         elif line.startswith('#'):
             continue
         # define ownership entries as a list of tuples
-        file_name, team = line.split()
-        entries.append((file_name, team))
+        file_name, owner = line.split()
+        entries.append((file_name, owner))
 
     # Search through PR files to find ownership matches
     matches = []
