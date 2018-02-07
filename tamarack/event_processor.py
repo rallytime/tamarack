@@ -50,6 +50,13 @@ def handle_pull_request(event_data, token):
     print('Received pull request event. Processing...')
     action = event_data.get('action')
     if action == 'opened':
+        # Skip Merge Forward PRs
+        if 'Merge forward' in event_data.get('pull_request').get('title', ''):
+            print('Skipping. PR is a merge-forward. Reviewers are not assigned to '
+                  'merge-forward PRs via Tamarack.')
+            return
+
+        # Assign reviewers!
         yield tamarack.utils.prs.assign_reviewers(event_data, token)
     else:
         print('Skipping. Action is \'{0}\'. '
