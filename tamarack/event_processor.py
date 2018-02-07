@@ -49,7 +49,11 @@ def handle_pull_request(event_data, token):
     '''
     print('Received pull request event. Processing...')
     action = event_data.get('action')
-    if action == 'opened':
+
+    # GitHub assigns the "review_requested" action to new PRs when there's a match
+    # on their end in the CODEOWNERS file. This is non-intuitive, since it would
+    # seem like a new PR should always be an "opened" action. 
+    if action in ('opened', 'review_requested'):
         # Skip Merge Forward PRs
         if 'Merge forward' in event_data.get('pull_request').get('title', ''):
             print('Skipping. PR is a merge-forward. Reviewers are not assigned to '
