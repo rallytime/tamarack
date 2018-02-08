@@ -172,7 +172,7 @@ def get_pr_file_names(event_data, token):
     for item in response:
         file_names.append(item.get('filename'))
 
-    print('PR #{0}: The following files names were found: {0}'.format(
+    print('PR #{0}: The following file names were found: {1}'.format(
         pr_num,
         file_names
     ))
