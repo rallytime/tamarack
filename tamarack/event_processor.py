@@ -52,7 +52,7 @@ def handle_pull_request(event_data, token):
 
     # GitHub assigns the "review_requested" action to new PRs when there's a match
     # on their end in the CODEOWNERS file. This is non-intuitive, since it would
-    # seem like a new PR should always be an "opened" action. 
+    # seem like a new PR should always be an "opened" action.
     if action in ('opened', 'review_requested'):
         # Skip Merge Forward PRs
         if 'Merge forward' in event_data.get('pull_request').get('title', ''):
@@ -63,6 +63,6 @@ def handle_pull_request(event_data, token):
         # Assign reviewers!
         yield tamarack.utils.prs.assign_reviewers(event_data, token)
     else:
-        print('Skipping. Action is \'{0}\'. '
-              'We only care about \'opened\'.'.format(action))
+        print('Skipping. Action is \'{0}\'. We only care about '
+              '\'opened\' or \'review_requested\'.'.format(action))
         return
