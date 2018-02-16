@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rallytime/tamarack.svg?branch=master)](https://travis-ci.org/rallytime/tamarack)
+
 # Tamarack
 
 A bot built with Python Tornado to automate common pull request tasks.
