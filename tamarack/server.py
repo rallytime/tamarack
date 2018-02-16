@@ -5,8 +5,7 @@ Main file that runs the tornado server for the bot.
 Requires the HOOK_SECRET_KEY and GITHUB_TOKEN environment variables to be set.
 Optionally, set the PORT environment variable as well. Default is ``8080``.
 
-This requires a minimum version of Python 3.4. However, please note that this
-project has only been tested with Python 3.6.
+Requires Python 3.6.
 '''
 
 # Import Python libs
@@ -37,7 +36,7 @@ class EventHandler(tornado.web.RequestHandler):
         pass
 
     @gen.coroutine
-    def post(self):
+    def post(self, *args, **kwargs):
         if not validate_github_signature(self.request):
             raise tornado.web.HTTPError(401)
 
@@ -48,12 +47,22 @@ class EventHandler(tornado.web.RequestHandler):
 
 
 def make_app():
+    '''
+    Create the tornado web application - uses the "events" endpoint.
+    '''
     return tornado.web.Application([
         ('/events', EventHandler),
     ])
 
 
 def validate_github_signature(request):
+    '''
+    Validate that the request coming in is from GitHub using the header
+    signature.
+
+    request
+        The incoming request to validate.
+    '''
     sha_type, gh_sig = request.headers.get('X-Hub-Signature').split('=')
     if sha_type != 'sha1':
         return False
@@ -91,12 +100,12 @@ if __name__ == '__main__':
     if _check_env_vars() is False:
         sys.exit()
 
-    port = os.environ.get('PORT')
-    if port is None:
-        port = 8080
-        print('No PORT setting found. Using default at \'{0}\'.'.format(port))
+    PORT = os.environ.get('PORT')
+    if PORT is None:
+        PORT = 8080
+        print('No PORT setting found. Using default at \'{0}\'.'.format(PORT))
     print('Starting Tamarack server.')
-    print('Listening on port \'{0}\'.'.format(port))
-    app = make_app()
-    app.listen(port)
+    print('Listening on port \'{0}\'.'.format(PORT))
+    APP = make_app()
+    APP.listen(PORT)
     tornado.ioloop.IOLoop.current().start()
