@@ -102,7 +102,7 @@ def assign_reviewers(event_data, token, reviewers):
     individuals = []
     for reviewer in reviewers:
         if '/' in reviewer:
-            org, team = reviewer.split('/')
+            _, team = reviewer.split('/')
             teams.append(team)
         else:
             individuals.append(reviewer)
@@ -211,8 +211,7 @@ def get_owners_file_contents(event_data, token, branch=None):
         url += '?ref={0}'.format(branch)
 
     print('PR #{0}: Fetching CODEOWNERS file.'.format(
-        event_data.get('number', 'unknown'))
-    )
+        event_data.get('number', 'unknown')))
     contents = yield api_request(url, token)
     return base64.b64decode(contents.get('content')).decode('utf-8')
 

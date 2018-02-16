@@ -6,12 +6,12 @@ Handle any Tamarack Bot logic needed to perform tasks related to Pull Requests.
 # Import Python libs
 import fnmatch
 
-# Import Tamarack libs
-import tamarack.github
-
 # Import Tornado libs
 from tornado import gen
 import tornado.web
+
+# Import Tamarack libs
+import tamarack.github
 
 
 @gen.coroutine

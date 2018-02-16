@@ -1,4 +1,7 @@
 language: python
-install: "pip install pylint"
-script: "pylint"
-
+python:
+  - "3.6"
+install:
+  - pip install pylint
+script:
+  - pylint tamarack/
