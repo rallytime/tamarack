@@ -15,9 +15,9 @@ found, the bot will comment on the Pull Request and mention the matching owners.
 ## Dependencies
 
 Tamarack requires a minimum version of:
-- Python >= 3.4. **Note**: Tamarack has only been tested with Python 3.6.
+- Python 3.6
 - [GitHub APIv3](https://developer.github.com/v3/)
-- Tornado >= 4.5.2
+- Tornado >= 4.5.2, < 5.0
 
 ## Set Up
 

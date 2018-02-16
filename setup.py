@@ -18,11 +18,9 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Operating System :: POSIX',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
     install_requires=[
-        'tornado',
+        'tornado>=4.5.2,<5.0',
     ],
 )
