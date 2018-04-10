@@ -3,12 +3,17 @@
 The event processor handles incoming events and is called from server.py.
 '''
 
+# Import Python libs
+import logging
+
 # Import Tornado libs
 from tornado import gen
 
 # Import Tamarack libs
 import tamarack.github
 import tamarack.utils.prs
+
+LOG = logging.getLogger(__name__)
 
 
 @gen.coroutine
@@ -47,7 +52,7 @@ def handle_pull_request(event_data, token):
     token
         GitHub user token.
     '''
-    print('Received pull request event. Processing...')
+    LOG.info('Received pull request event. Processing...')
     action = event_data.get('action')
 
     # GitHub assigns the "review_requested" action to new PRs when there's a match
@@ -56,13 +61,13 @@ def handle_pull_request(event_data, token):
     if action in ('opened', 'review_requested'):
         # Skip Merge Forward PRs
         if 'Merge forward' in event_data.get('pull_request').get('title', ''):
-            print('Skipping. PR is a merge-forward. Reviewers are not assigned to '
-                  'merge-forward PRs via Tamarack.')
+            LOG.info('Skipping. PR is a merge-forward. Reviewers are not assigned '
+                     'to merge-forward PRs via Tamarack.')
             return
 
         # Assign reviewers!
         yield tamarack.utils.prs.assign_reviewers(event_data, token)
     else:
-        print('Skipping. Action is \'{0}\'. We only care about '
-              '\'opened\' or \'review_requested\'.'.format(action))
+        LOG.info('Skipping. Action is \'%s\'. We only care about '
+                 '\'opened\' or \'review_requested\'.', action)
         return

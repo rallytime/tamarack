@@ -9,6 +9,7 @@ handle all kinds of GitHub API use cases.
 # Import Python libs
 import base64
 import json
+import logging
 
 # Import Tornado libs
 from tornado import gen
@@ -16,6 +17,8 @@ import tornado.escape
 import tornado.httpclient
 import tornado.httputil
 import tornado.web
+
+LOG = logging.getLogger(__name__)
 
 
 @gen.coroutine
@@ -113,11 +116,10 @@ def assign_reviewers(event_data, token, reviewers):
     if teams:
         post_data['team_reviewers'] = teams
 
-    print(
-        'Requesting reviewers {0} on pull request #{1}.'.format(
-            reviewers,
-            event_data.get('number', 'unknown')
-        )
+    LOG.info(
+        'Requesting reviewers %s on pull request #%s.',
+        reviewers,
+        event_data.get('number', 'unknown')
     )
 
     yield api_request(url, token, method='POST', post_data=post_data)
@@ -144,7 +146,7 @@ def create_pr_comment(event_data, token, comment_txt):
             'Pull Request URL could not be found.'
         )
 
-    print('Posting comment to GitHub.')
+    LOG.info('Posting comment to GitHub.')
     url += '/comments'
 
     yield api_request(url, token, method='POST', post_data={'body': comment_txt})
@@ -165,17 +167,18 @@ def get_pr_file_names(event_data, token):
     url += '/files'
     pr_num = event_data.get('number', 'unknown')
 
-    print('PR #{0}: Fetching Pull Request file names.'.format(pr_num))
+    LOG.info('PR #%s: Fetching Pull Request file names.', pr_num)
     response = yield api_request(url, token)
 
     file_names = []
     for item in response:
         file_names.append(item.get('filename'))
 
-    print('PR #{0}: The following file names were found: {1}'.format(
+    LOG.info(
+        'PR #%s: The following file names were found: %s',
         pr_num,
         file_names
-    ))
+    )
     return file_names
 
 
@@ -210,8 +213,10 @@ def get_owners_file_contents(event_data, token, branch=None):
     if branch:
         url += '?ref={0}'.format(branch)
 
-    print('PR #{0}: Fetching CODEOWNERS file.'.format(
-        event_data.get('number', 'unknown')))
+    LOG.info(
+        'PR #%s: Fetching CODEOWNERS file.',
+        event_data.get('number', 'unknown')
+    )
     contents = yield api_request(url, token)
     return base64.b64decode(contents.get('content')).decode('utf-8')
 
