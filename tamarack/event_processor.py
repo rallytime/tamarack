@@ -13,7 +13,7 @@ from tornado import gen
 import tamarack.github
 import tamarack.utils.prs
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @gen.coroutine
@@ -52,7 +52,7 @@ def handle_pull_request(event_data, token):
     token
         GitHub user token.
     '''
-    log.info('Received pull request event. Processing...')
+    LOG.info('Received pull request event. Processing...')
     action = event_data.get('action')
 
     # GitHub assigns the "review_requested" action to new PRs when there's a match
@@ -61,13 +61,13 @@ def handle_pull_request(event_data, token):
     if action in ('opened', 'review_requested'):
         # Skip Merge Forward PRs
         if 'Merge forward' in event_data.get('pull_request').get('title', ''):
-            log.info('Skipping. PR is a merge-forward. Reviewers are not assigned '
+            LOG.info('Skipping. PR is a merge-forward. Reviewers are not assigned '
                      'to merge-forward PRs via Tamarack.')
             return
 
         # Assign reviewers!
         yield tamarack.utils.prs.assign_reviewers(event_data, token)
     else:
-        log.info('Skipping. Action is \'%s\'. We only care about '
+        LOG.info('Skipping. Action is \'%s\'. We only care about '
                  '\'opened\' or \'review_requested\'.', action)
         return

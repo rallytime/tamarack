@@ -28,7 +28,7 @@ import tamarack.event_processor
 HOOK_SECRET_KEY = os.environ.get('HOOK_SECRET_KEY')
 GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 class EventHandler(tornado.web.RequestHandler):
@@ -80,7 +80,7 @@ def _check_env_vars():
 
     if HOOK_SECRET_KEY is None:
         check_ok = False
-        log.error(
+        LOG.error(
             'The bot was started without a WebHook Secret Key.\n'
             'Please set the HOOK_SECRET_KEY environment variable.\n'
             'To get started:\n'
@@ -94,7 +94,7 @@ def _check_env_vars():
 
     if GITHUB_TOKEN is None:
         check_ok = False
-        log.error(
+        LOG.error(
             'The bot was started without a GitHub authentication token.\n'
             'Please set the GITHUB_TOKEN environment variable: '
             '"export GITHUB_TOKEN=your_token".'
@@ -109,11 +109,11 @@ def _setup_logging():
     # Check if the logging directory exists and attempt to create it if necessary
     log_dir = os.path.dirname(log_path)
     if not os.path.exists(log_dir):
-        log.info('Log directory not found. Trying to create it: %s', log_dir)
+        LOG.info('Log directory not found. Trying to create it: %s', log_dir)
         try:
             os.makedirs(log_dir, mode=0o700)
         except OSError as err:
-            log.error('Failed to create directory for log file: %s (%s)', log_dir, err)
+            LOG.error('Failed to create directory for log file: %s (%s)', log_dir, err)
             return
 
     # Set the log level, if provided. Otherwise, default to INFO
@@ -121,7 +121,7 @@ def _setup_logging():
     if log_level:
         numeric_level = getattr(logging, log_level, None)
         if not isinstance(numeric_level, int):
-            log.error('Invalid log level: %s', log_level)
+            LOG.error('Invalid log level: %s', log_level)
             return
     else:
         log_level = logging.INFO
@@ -151,10 +151,10 @@ if __name__ == '__main__':
     PORT = os.environ.get('PORT')
     if PORT is None:
         PORT = 8080
-        log.info('No PORT setting found. Using default at \'%s\'.', PORT)
+        LOG.info('No PORT setting found. Using default at \'%s\'.', PORT)
 
-    log.info('Starting Tamarack server.')
-    log.info('Listening on port \'%s\'.', PORT)
+    LOG.info('Starting Tamarack server.')
+    LOG.info('Listening on port \'%s\'.', PORT)
 
     APP = make_app()
     APP.listen(PORT)

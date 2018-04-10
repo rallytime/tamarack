@@ -18,7 +18,7 @@ import tornado.httpclient
 import tornado.httputil
 import tornado.web
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @gen.coroutine
@@ -116,7 +116,7 @@ def assign_reviewers(event_data, token, reviewers):
     if teams:
         post_data['team_reviewers'] = teams
 
-    log.info(
+    LOG.info(
         'Requesting reviewers %s on pull request #%s.',
         reviewers,
         event_data.get('number', 'unknown')
@@ -146,7 +146,7 @@ def create_pr_comment(event_data, token, comment_txt):
             'Pull Request URL could not be found.'
         )
 
-    log.info('Posting comment to GitHub.')
+    LOG.info('Posting comment to GitHub.')
     url += '/comments'
 
     yield api_request(url, token, method='POST', post_data={'body': comment_txt})
@@ -167,14 +167,15 @@ def get_pr_file_names(event_data, token):
     url += '/files'
     pr_num = event_data.get('number', 'unknown')
 
-    log.info('PR #%s: Fetching Pull Request file names.', pr_num)
+    LOG.info('PR #%s: Fetching Pull Request file names.', pr_num)
     response = yield api_request(url, token)
 
     file_names = []
     for item in response:
         file_names.append(item.get('filename'))
 
-    log.info('PR #%s: The following file names were found: %s',
+    LOG.info(
+        'PR #%s: The following file names were found: %s',
         pr_num,
         file_names
     )
@@ -212,7 +213,8 @@ def get_owners_file_contents(event_data, token, branch=None):
     if branch:
         url += '?ref={0}'.format(branch)
 
-    log.info('PR #%s: Fetching CODEOWNERS file.',
+    LOG.info(
+        'PR #%s: Fetching CODEOWNERS file.',
         event_data.get('number', 'unknown')
     )
     contents = yield api_request(url, token)

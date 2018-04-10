@@ -14,7 +14,7 @@ import tornado.web
 # Import Tamarack libs
 import tamarack.github
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
 @gen.coroutine
@@ -98,7 +98,7 @@ def assign_reviewers(event_data, token):
             owners
         )
     else:
-        log.info(
+        LOG.info(
             'No code owners were found for PR #%s. '
             'No reviewers requested.',
             event_data.get('number', 'unknown')
