@@ -5,6 +5,7 @@ Handle any Tamarack Bot logic needed to perform tasks related to Pull Requests.
 
 # Import Python libs
 import fnmatch
+import logging
 
 # Import Tornado libs
 from tornado import gen
@@ -12,6 +13,8 @@ import tornado.web
 
 # Import Tamarack libs
 import tamarack.github
+
+log = logging.getLogger(__name__)
 
 
 @gen.coroutine
@@ -95,11 +98,10 @@ def assign_reviewers(event_data, token):
             owners
         )
     else:
-        print(
-            'No code owners were found for PR #{0}. '
-            'No reviewers requested.'.format(
-                event_data.get('number', 'unknown')
-            )
+        log.info(
+            'No code owners were found for PR #%s. '
+            'No reviewers requested.',
+            event_data.get('number', 'unknown')
         )
 
 
