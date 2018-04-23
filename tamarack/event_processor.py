@@ -21,7 +21,8 @@ def handle_event(event_data, token):
     '''
     An event has been received. Decide what to do with it.
 
-    Presently, only pull requests are handled but this can be expanded later.
+    Presently, only pull requests are handled. However, this can be expanded
+    later.
 
     event_data
         Payload sent from GitHub.
@@ -39,11 +40,12 @@ def handle_pull_request(event_data, token):
     Handles Pull Request events by examining the type of action that was triggered
     and then decides what to do next.
 
-    For example, if a Pull Request is opened, the bot needs to comment on the pull
-    request with the list of teams that should be reviewing the PR (if applicable).
+    For example, if a Pull Request is opened, the bot needs to assign reviewers to
+    the pull request with the list of teams that should be reviewing the pull
+    request, if applicable.
 
     Currently this function only handles "opened" events for PRs and has the bot
-    comment on the PR with the list of teams/users that should potentially review
+    assign reviewers to the PR with the list of teams/users that should review
     the submission. However, this can be easily expanded in the future.
 
     event_data
