@@ -133,4 +133,10 @@ def get_code_owners(files, owners_contents):
             if fnmatch.fnmatch(item, entry[0]):
                 matches.append(entry[1])
 
+                # SUSE wants to review any PRs the Core team reviews.
+                # Instead of duplicating the CODEOWNERS file, handle
+                # this programmatically here - See Issue #14.
+                if 'team-core' in entry[1]:
+                    matches.append('@saltstack/team-suse')
+
     return matches
