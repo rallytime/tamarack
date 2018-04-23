@@ -54,22 +54,22 @@ def handle_pull_request(event_data, token):
     token
         GitHub user token.
     '''
-    LOG.info('Received pull request event. Processing...')
-    action = event_data.get('action')
+    pr_num = event_data.get('number', 'unknown')
+    action = event_data.get('action', 'unknown')
 
-    # GitHub assigns the "review_requested" action to new PRs when there's a match
-    # on their end in the CODEOWNERS file. This is non-intuitive, since it would
-    # seem like a new PR should always be an "opened" action.
-    if action in ('opened', 'review_requested'):
+    LOG.info('PR #%s: Received pull request event. Processing...', pr_num)
+
+    # Assign reviewers on "opened" PRs, as applicable.
+    if action == 'opened':
         # Skip Merge Forward PRs
         if 'Merge forward' in event_data.get('pull_request').get('title', ''):
-            LOG.info('Skipping. PR is a merge-forward. Reviewers are not assigned '
-                     'to merge-forward PRs via Tamarack.')
+            LOG.info('PR #%s: Skipping. PR is a merge-forward. Reviewers are not '
+                     'assigned to merge-forward PRs via Tamarack.', pr_num)
             return
 
         # Assign reviewers!
         yield tamarack.utils.prs.assign_reviewers(event_data, token)
     else:
-        LOG.info('Skipping. Action is \'%s\'. We only care about '
-                 '\'opened\' or \'review_requested\'.', action)
+        LOG.info('PR #%s: Skipping. Action is \'%s\'. We only care about '
+                 '\'opened\'.', pr_num, action)
         return
