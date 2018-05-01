@@ -11,7 +11,7 @@ from tornado import gen
 
 # Import Tamarack libs
 import tamarack.github
-import tamarack.utils.prs
+import tamarack.pull_request
 
 LOG = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def handle_pull_request(event_data, token):
             return
 
         # Assign reviewers!
-        yield tamarack.utils.prs.assign_reviewers(event_data, token)
+        yield tamarack.pull_request.assign_reviewers(event_data, token)
     else:
         LOG.info('PR #%s: Skipping. Action is \'%s\'. We only care about '
                  '\'opened\'.', pr_num, action)
