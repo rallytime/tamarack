@@ -13,7 +13,7 @@ import tornado.web
 import tamarack.pull_request
 
 
-class TestGetPROwner(object):
+class TestGetPROwner:
     '''
     TestCase for the _get_pr_owner function
     '''
@@ -36,7 +36,7 @@ class TestGetPROwner(object):
             tamarack.pull_request._get_pr_owner({'number': 1})
 
 
-class TestGetURL(object):
+class TestGetURL:
     '''
     TestCase for the _get_url function
     '''
