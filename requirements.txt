@@ -1,3 +1,5 @@
+coveralls
 pylint
 pytest
+pytest-cov
 tornado>=4.5.2,<5.0
