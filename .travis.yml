@@ -6,6 +6,6 @@ install:
 script:
   - pylint tamarack/
   - pylint tests/
-  - pytest -v
+  - pytest --cov=tamarack/
 after_success:
   - coveralls
