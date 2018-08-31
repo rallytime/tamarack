@@ -13,6 +13,47 @@ import tornado.web
 import tamarack.pull_request
 
 
+class TestGetCodeOwners:
+    '''
+    TestCase for the _get_code_owners function
+    '''
+    owners_content = '# SALTSTACK CODE OWNERS\n' \
+                     '\n' \
+                     '# Team State\n' \
+                     'salt/state.py       @saltstack/team-state\n' \
+                     '\n' \
+                     '# Team Core\n' \
+                     'salt/auth/*         @saltstack/team-core\n'
+
+    def test_no_matches(self):
+        '''
+        Tests that no code owners are found
+        '''
+        assert tamarack.pull_request._get_code_owners(
+            ['foo/bar.py'],
+            self.owners_content
+        ) == []
+
+    def test_matches_found(self):
+        '''
+        Tests that code owners are found for a simple owners file
+        '''
+        assert tamarack.pull_request._get_code_owners(
+            ['salt/state.py'],
+            self.owners_content
+        ) == ['@saltstack/team-state']
+
+    def test_core_and_suse_matches(self):
+        '''
+        Tests that team-suse is requested for a review whenever team-core is
+        requested for a review whenever team-core is.
+        '''
+        assert tamarack.pull_request._get_code_owners(
+            ['salt/auth/pki.py'],
+            self.owners_content
+        ) == ['@saltstack/team-core', '@saltstack/team-suse']
+
+
 class TestGetPROwner:
     '''
     TestCase for the _get_pr_owner function
