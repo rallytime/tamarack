@@ -210,7 +210,7 @@ def _get_pr_owner(event_data):
     event_data
         Payload sent from GitHub.
     '''
-    pr_owner = event_data.get('pull_request').get('user', {}).get('login')
+    pr_owner = event_data.get('pull_request', {}).get('user', {}).get('login')
     if pr_owner is None:
         raise tornado.web.HTTPError(
             500,
