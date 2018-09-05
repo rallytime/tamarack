@@ -5,11 +5,8 @@ Tests for the functions in tamarack.pull_request.py
 
 # Import Python libs
 import pytest
-from unittest.mock import MagicMock, patch
 
 # Import Tornado libs
-import tornado.concurrent
-import tornado.httpclient
 import tornado.testing
 import tornado.web
 
