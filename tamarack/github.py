@@ -20,7 +20,7 @@ LOG = logging.getLogger(__name__)
 
 
 @gen.coroutine
-def api_request(url, token, method='GET', headers=None, post_data=None):
+def api_request(url, token=None, method='GET', headers=None, post_data=None):
     '''
     The main function used to interact with the GitHub API. This function
     performs the actual requests to GitHub when responding to various events.
