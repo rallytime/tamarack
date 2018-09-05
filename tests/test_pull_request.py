@@ -61,9 +61,9 @@ class TestGetOwnersFileContents(tornado.testing.AsyncTestCase):
     '''
 
     @tornado.testing.gen_test
-    def test_owners_file_contents_found_with_branch(self):
+    def test_contents_found_no_branch(self):
         '''
-        Tests that the owners file contents are returned when a branch is passed.
+        Tests that the owners file contents are returned when a branch is not passed.
         '''
         event_data = {'number': 49517,
                       'repository':
@@ -77,9 +77,9 @@ class TestGetOwnersFileContents(tornado.testing.AsyncTestCase):
         assert 'tests/*/test_reg.py                 @saltstack/team-windows' in contents
 
     @tornado.testing.gen_test
-    def test_owners_file_contents_found_no_branch(self):
+    def test_contents_found_with_branch(self):
         '''
-        Tests that the owners file contents are returned when a branch is not passed.
+        Tests that the owners file contents are returned when a branch is passed.
         '''
         event_data = {'number': 49517,
                       'repository':
