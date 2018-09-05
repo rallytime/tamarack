@@ -5,8 +5,12 @@ Tests for the functions in tamarack.pull_request.py
 
 # Import Python libs
 import pytest
+from unittest.mock import MagicMock, patch
 
 # Import Tornado libs
+import tornado.concurrent
+import tornado.httpclient
+import tornado.testing
 import tornado.web
 
 # Import Tamarack libs
@@ -52,6 +56,60 @@ class TestGetCodeOwners:
             ['salt/auth/pki.py'],
             self.owners_content
         ) == ['@saltstack/team-core', '@saltstack/team-suse']
+
+
+class TestGetOwnersFileContents(tornado.testing.AsyncTestCase):
+    '''
+    TestCase for the get_owners_file_contents function
+    '''
+
+    @tornado.testing.gen_test
+    def test_owners_file_contents_found_with_branch(self):
+        '''
+        Tests that the owners file contents are returned when a branch is passed.
+        '''
+        event_data = {'number': 49517,
+                      'repository':
+                          {'url': 'https://api.github.com/repos/saltstack/salt'},
+                      'pull_request': {'base': {'ref': 'develop'}}}
+        contents = yield tamarack.pull_request.get_owners_file_contents(
+            event_data, ''
+        )
+        assert '# Lines starting with \'#\' are comments.' in contents
+        assert 'salt/cloud/*                        @saltstack/team-cloud' in contents
+        assert 'tests/*/test_reg.py                 @saltstack/team-windows' in contents
+
+    @tornado.testing.gen_test
+    def test_owners_file_contents_found_no_branch(self):
+        '''
+        Tests that the owners file contents are returned when a branch is not passed.
+        '''
+        event_data = {'number': 49517,
+                      'repository':
+                          {'url': 'https://api.github.com/repos/saltstack/salt'}}
+        contents = yield tamarack.pull_request.get_owners_file_contents(
+            event_data, '', branch='2018.3'
+        )
+        assert '# Team State' in contents
+        assert 'salt/state.py                       @saltstack/team-state' in contents
+        assert 'salt/cli/ssh.py                     @saltstack/team-ssh' in contents
+
+
+class TestGetPRFileNames(tornado.testing.AsyncTestCase):
+    '''
+    TestCase for the get_pr_file_names function
+    '''
+
+    @tornado.testing.gen_test
+    def test_files_found(self):
+        '''
+        Tests that a list of files are found and returned
+        '''
+        event_data = {'number': 49517,
+                      'pull_request':
+                          {'url': 'https://api.github.com/repos/saltstack/salt/pulls/49517'}}
+        files = yield tamarack.pull_request.get_pr_file_names(event_data, '')
+        assert files == ['salt/modules/yumpkg.py']
 
 
 class TestGetPROwner:
