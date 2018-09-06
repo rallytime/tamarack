@@ -4,6 +4,7 @@ Tests for the functions in tamarack.pull_request.py
 '''
 
 # Import Python libs
+import os
 import pytest
 
 # Import Tornado libs
@@ -12,6 +13,8 @@ import tornado.web
 
 # Import Tamarack libs
 import tamarack.pull_request
+
+GITHUB_TEST_TOKEN = os.environ.get('GITHUB_TEST_TOKEN') or ''
 
 
 class TestGetCodeOwners:
@@ -70,7 +73,7 @@ class TestGetOwnersFileContents(tornado.testing.AsyncTestCase):
                           {'url': 'https://api.github.com/repos/saltstack/salt'},
                       'pull_request': {'base': {'ref': 'develop'}}}
         contents = yield tamarack.pull_request.get_owners_file_contents(
-            event_data, ''
+            event_data, GITHUB_TEST_TOKEN
         )
         assert '# Lines starting with \'#\' are comments.' in contents
         assert 'salt/cloud/*                        @saltstack/team-cloud' in contents
@@ -85,7 +88,7 @@ class TestGetOwnersFileContents(tornado.testing.AsyncTestCase):
                       'repository':
                           {'url': 'https://api.github.com/repos/saltstack/salt'}}
         contents = yield tamarack.pull_request.get_owners_file_contents(
-            event_data, '', branch='2018.3'
+            event_data, GITHUB_TEST_TOKEN, branch='2018.3'
         )
         assert '# Team State' in contents
         assert 'salt/state.py                       @saltstack/team-state' in contents
@@ -105,7 +108,7 @@ class TestGetPRFileNames(tornado.testing.AsyncTestCase):
         event_data = {'number': 49517,
                       'pull_request':
                           {'url': 'https://api.github.com/repos/saltstack/salt/pulls/49517'}}
-        files = yield tamarack.pull_request.get_pr_file_names(event_data, '')
+        files = yield tamarack.pull_request.get_pr_file_names(event_data, GITHUB_TEST_TOKEN)
         assert files == ['salt/modules/yumpkg.py']
 
 
