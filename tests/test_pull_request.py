@@ -4,9 +4,9 @@ Tests for the functions in tamarack.pull_request.py
 '''
 
 # Import Python libs
+from unittest.mock import MagicMock, patch
 import os
 import pytest
-from unittest.mock import MagicMock, patch
 
 # Import Tornado libs
 import tornado.httpclient
@@ -38,7 +38,8 @@ class TestAssignReviewers(tornado.testing.AsyncTestCase):
                            'base': {'ref': 'master'}},
                       'repository':
                           {'url': 'https://api.github.com/repos/rallytime/tamarack'}}
-        with patch('tamarack.pull_request._get_code_owners', MagicMock(return_value=['tamarack-bot'])):
+        with patch('tamarack.pull_request._get_code_owners',
+                   MagicMock(return_value=['tamarack-bot'])):
             try:
                 yield tamarack.pull_request.assign_reviewers(
                     event_data,
@@ -157,8 +158,9 @@ class TestCreatePRComment(tornado.testing.AsyncTestCase):
         '''
         Tests that the GitHub api request was made to post a comment.
         '''
-        event_data = {'pull_request':
-                          {'issue_url': 'https://api.github.com/repos/rallytime/tamarack/issues/25'}}
+        event_data = {
+            'pull_request':
+                {'issue_url': 'https://api.github.com/repos/rallytime/tamarack/issues/25'}}
         try:
             yield tamarack.pull_request.create_pr_comment(
                 event_data,
