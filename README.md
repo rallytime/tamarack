@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/rallytime/tamarack.svg?branch=master)](https://travis-ci.org/rallytime/tamarack)
-[![Coverage Status](https://coveralls.io/repos/github/rallytime/tamarack/badge.svg?branch=master)](https://coveralls.io/github/rallytime/tamarack?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/rallytime/tamarack/badge.svg?branch=master&service=github)](https://coveralls.io/github/rallytime/tamarack?branch=master)
 
 # Tamarack
 
