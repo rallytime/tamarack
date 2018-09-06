@@ -98,8 +98,9 @@ def get_owners_file_contents(event_data, token, branch=None):
     url += '/contents/.github/CODEOWNERS'
 
     if branch is None:
-        if event_data.get('pull_request'):
-            branch = event_data.get('pull_request').get('base').get('ref')
+        pull_req_data = event_data.get('pull_request', {})
+        if pull_req_data:
+            branch = pull_req_data.get('base', {}).get('ref')
 
     if branch:
         url += '?ref={0}'.format(branch)
@@ -228,8 +229,8 @@ def _get_url(event_data, url_type):
         Payload sent from GitHub.
 
     type
-        The type of GitHub URL type. ``pull_request`` and ``repository`` are
-        supported.
+        The type of GitHub URL type. ``issue``, ``pull_request``, and ``repository``
+        are supported.
     '''
     url = None
     if url_type == 'pull_request':
