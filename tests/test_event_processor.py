@@ -28,7 +28,8 @@ class TestHandleEvent(tornado.testing.AsyncTestCase):
         Tests that a pull request event is handled
         '''
         event_data = {'number': 1,
-                      'action': 'foo'}
+                      'action': 'foo',
+                      'pull_request': {}}
         ret = yield tamarack.event_processor.handle_event(event_data, '')
         assert ret is None
 
