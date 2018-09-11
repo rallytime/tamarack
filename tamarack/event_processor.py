@@ -62,7 +62,7 @@ def handle_pull_request(event_data, token):
     # Assign reviewers on "opened" PRs, as applicable.
     if action == 'opened':
         # Skip Merge Forward PRs
-        if 'Merge forward' in event_data.get('pull_request').get('title', ''):
+        if 'Merge forward' in event_data.get('pull_request', {}).get('title', ''):
             LOG.info('PR #%s: Skipping. PR is a merge-forward. Reviewers are not '
                      'assigned to merge-forward PRs via Tamarack.', pr_num)
             return
