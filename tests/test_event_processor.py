@@ -29,7 +29,7 @@ class TestHandleEvent(tornado.testing.AsyncTestCase):
         '''
         event_data = {'number': 1,
                       'action': 'foo',
-                      'pull_request': {}}
+                      'pull_request': {'title': 'Hello World!'}}
         ret = yield tamarack.event_processor.handle_event(event_data, '')
         assert ret is None
 
