@@ -62,7 +62,7 @@ class TestCheckEnvVars:
         # Reset variable for clean tests
         tamarack.server.HOOK_SECRET_KEY = None
 
-    def test_environtment_variables_present(self):
+    def test_env_variables_present(self):
         '''
         Tests that True is returned when all the required environment variables
         are present.
