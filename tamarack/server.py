@@ -27,6 +27,7 @@ import tamarack.event_processor
 
 HOOK_SECRET_KEY = os.environ.get('HOOK_SECRET_KEY')
 GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
+SLACK_WEBHOOK_URL = os.environ.get('SLACK_WEBHOOK_URL')
 
 LOG = logging.getLogger(__name__)
 
@@ -98,6 +99,14 @@ def _check_env_vars():
             'The bot was started without a GitHub authentication token.\n'
             'Please set the GITHUB_TOKEN environment variable: '
             '"export GITHUB_TOKEN=your_token".'
+        )
+
+    if SLACK_WEBHOOK_URL is None:
+        LOG.warning(
+            'The bot was started without an optional Slack Webhook URL.\n'
+            'In order to interact with Slack, the webhook must be set.\n'
+            'Please set the SLACK_WEBHOOK_URL environment variable: '
+            '"export SLACK_WEBHOOK_URL=your_slack_webhook_url".'
         )
 
     return check_ok
