@@ -12,6 +12,7 @@ from tornado import gen
 # Import Tamarack libs
 import tamarack.github
 import tamarack.pull_request
+import tamarack.slack
 
 LOG = logging.getLogger(__name__)
 
@@ -32,6 +33,8 @@ def handle_event(event_data, token):
     '''
     if event_data.get('pull_request'):
         yield handle_pull_request(event_data, token)
+    elif event_data.get('ref_type'):
+        yield handle_create_event(event_data)
 
 
 @gen.coroutine
@@ -72,4 +75,45 @@ def handle_pull_request(event_data, token):
     else:
         LOG.info('PR #%s: Skipping. Action is \'%s\'. We only care about '
                  '\'opened\'.', pr_num, action)
+        return
+
+
+@gen.coroutine
+def handle_create_event(event_data):
+    '''
+    Handles Create events by examining the type of reference object that was
+    created and then decides what to do next.
+
+    For example, if a new branch is pushed to the repository, the bot needs to
+    send a slack message to the configured Slack App Webhook URL.
+
+    event_data
+        Payload sent from GitHub.
+
+    '''
+    event_type = event_data.get('ref_type')
+    ref_name = event_data.get('ref')
+
+    LOG.info('Received create event. Processing...')
+
+    # Send message to Slack when new branch is created.
+    if event_type == 'branch':
+        LOG.info('New branch \'%s\' was created in GitHub. Posting to Slack.', ref_name)
+        post_data = {'attachments': [
+            {'color': 'good',
+             'fields': [{
+                 'value':
+                     'A new branch named `{0}` was created in the Salt repo.'.format(
+                         ref_name
+                     )
+                 }]}
+        ]}
+
+        yield tamarack.slack.api_request(
+            method='POST',
+            post_data=post_data
+        )
+    else:
+        LOG.info('Skipping. Create event is of \'%s\' type. We only care about '
+                 '\'branch\'.', event_type)
         return
